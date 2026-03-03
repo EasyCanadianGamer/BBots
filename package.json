@@ -1,0 +1,14 @@
+{
+  "name": "dwahfy-discord",
+  "version": "1.0.0",
+  "description": "Discord bot with slash commands for announcements, welcome messages, and role assignment",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7"
+  }
+}
