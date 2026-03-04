@@ -1,30 +1,26 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
+const { Events } = require('discord.js');
+const client = require('./client.js');
 const { token } = require('./config.js');
+const { startDashboard } = require('./web/server.js');
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,  // Privileged — enable in Developer Portal
-    GatewayIntentBits.GuildMessages,
-  ],
-});
-
-client.commands = new Collection();
-
-// Load commands
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
-
-for (const file of commandFiles) {
-  const command = require(path.join(commandsPath, file));
-  if ('data' in command && 'execute' in command) {
-    client.commands.set(command.data.name, command);
-  } else {
-    console.warn(`[WARNING] ${file} is missing 'data' or 'execute'.`);
+// Load commands (recursively, supports subdirectories like commands/music/)
+function loadCommands(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      loadCommands(path.join(dir, entry.name));
+    } else if (entry.name.endsWith('.js')) {
+      const command = require(path.join(dir, entry.name));
+      if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+      } else {
+        console.warn(`[WARNING] ${entry.name} is missing 'data' or 'execute'.`);
+      }
+    }
   }
 }
+loadCommands(path.join(__dirname, 'commands'));
 
 // Load events
 const eventsPath = path.join(__dirname, 'events');
@@ -38,5 +34,11 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args));
   }
 }
+
+client.once(Events.ClientReady, () => {
+  startDashboard(client);
+  require('./scheduler.js').init(client);
+  require('./notifications.js').init(client);
+});
 
 client.login(token);

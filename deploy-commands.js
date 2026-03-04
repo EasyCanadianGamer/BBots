@@ -10,17 +10,22 @@ if (!DISCORD_TOKEN || !CLIENT_ID || !GUILD_ID) {
 }
 
 const commands = [];
-const commandsPath = path.join(__dirname, 'src', 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
 
-for (const file of commandFiles) {
-  const command = require(path.join(commandsPath, file));
-  if ('data' in command && 'execute' in command) {
-    commands.push(command.data.toJSON());
-  } else {
-    console.warn(`[WARNING] Skipping ${file}: missing 'data' or 'execute'.`);
+function loadCommands(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      loadCommands(path.join(dir, entry.name));
+    } else if (entry.name.endsWith('.js')) {
+      const command = require(path.join(dir, entry.name));
+      if ('data' in command && 'execute' in command) {
+        commands.push(command.data.toJSON());
+      } else {
+        console.warn(`[WARNING] Skipping ${entry.name}: missing 'data' or 'execute'.`);
+      }
+    }
   }
 }
+loadCommands(path.join(__dirname, 'src', 'commands'));
 
 const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
 

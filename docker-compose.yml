@@ -1,0 +1,11 @@
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data   # persists bbots.db across container restarts
+    env_file:
+      - .env
+
+# To register slash commands (run once after first build):
+#   docker compose run --rm bot node deploy-commands.js

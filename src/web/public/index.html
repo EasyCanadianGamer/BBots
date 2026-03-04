@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBots — Admin Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🤖</span>
+      <span class="logo-text">BBots</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="#" class="nav-link active" data-section="stats">📊 Stats</a></li>
+      <li><a href="#" class="nav-link" data-section="announce">📣 Announce</a></li>
+      <li><a href="#" class="nav-link" data-section="welcome">👋 Welcome</a></li>
+      <li><a href="#" class="nav-link" data-section="roles">🎭 Roles</a></li>
+      <li><a href="#" class="nav-link" data-section="reaction-roles">🎯 Reaction Roles</a></li>
+      <li><a href="#" class="nav-link" data-section="auto-roles">🤖 Auto Roles</a></li>
+      <li><a href="#" class="nav-link" data-section="embed">📝 Embed Builder</a></li>
+      <li><a href="#" class="nav-link" data-section="auto-responders">💬 Auto-Responders</a></li>
+      <li><a href="#" class="nav-link" data-section="scheduled">🕐 Scheduled</a></li>
+      <li><a href="#" class="nav-link" data-section="birthdays">🎂 Birthdays</a></li>
+      <li><a href="#" class="nav-link" data-section="xp">⭐ XP</a></li>
+      <li><a href="#" class="nav-link" data-section="notif">🔔 Notifications</a></li>
+      <li><a href="#" class="nav-link" data-section="ai">🤖 AI Chat</a></li>
+      <li><a href="#" class="nav-link" data-section="features">🎛️ Features</a></li>
+      <li><a href="#" class="nav-link" data-section="logs">📋 Logs</a></li>
+      <li><a href="#" class="nav-link" data-section="settings">⚙️ Settings</a></li>
+    </ul>
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="sidebar-user-avatar" id="sidebar-avatar"></div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-tag" id="sidebar-tag">—</div>
+        <div class="sidebar-user-guild" id="sidebar-guild">—</div>
+      </div>
+    </div>
+    <a href="/logout" class="logout-btn">Sign Out</a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── Stats ─────────────────────────────────────────────── -->
+    <section id="section-stats" class="section active">
+      <h1 class="section-title">Bot Stats</h1>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Status</div>
+          <div class="stat-value" id="stat-status">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bot Tag</div>
+          <div class="stat-value" id="stat-tag">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Uptime</div>
+          <div class="stat-value" id="stat-uptime">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Server</div>
+          <div class="stat-value" id="stat-guild">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Members</div>
+          <div class="stat-value" id="stat-members">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Commands</div>
+          <div class="stat-value" id="stat-commands">—</div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem">
+        <button class="btn btn-primary" id="deploy-btn" onclick="deployCommands()">🚀 Deploy Slash Commands</button>
+        <span id="deploy-feedback" class="feedback" style="margin-left:0.75rem"></span>
+      </div>
+    </section>
+
+    <!-- ── Announce ───────────────────────────────────────────── -->
+    <section id="section-announce" class="section">
+      <h1 class="section-title">Post Announcement</h1>
+      <div class="card">
+        <form id="form-announce">
+          <div class="form-group">
+            <label for="announce-title">Title <span class="required">*</span></label>
+            <input type="text" id="announce-title" maxlength="256" placeholder="Event title" required>
+          </div>
+          <div class="form-group">
+            <label for="announce-body">Description <span class="required">*</span></label>
+            <textarea id="announce-body" maxlength="4096" rows="5" placeholder="Announcement body..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="announce-date">Date / Time <span class="optional">(optional)</span></label>
+            <input type="text" id="announce-date" placeholder='e.g. "March 15 at 8 PM EST"'>
+          </div>
+          <div class="form-group">
+            <label for="announce-channel">Channel <span class="required">*</span></label>
+            <select id="announce-channel" required>
+              <option value="">Loading channels...</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Post Announcement</button>
+          <div id="announce-feedback" class="feedback"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── Welcome ────────────────────────────────────────────── -->
+    <section id="section-welcome" class="section">
+      <h1 class="section-title">Send Welcome Message</h1>
+      <div class="card">
+        <p class="section-desc">Manually send a welcome embed to the configured welcome channel for a specific user.</p>
+        <form id="form-welcome">
+          <div class="form-group">
+            <label for="welcome-userid">User ID <span class="required">*</span></label>
+            <input type="text" id="welcome-userid" placeholder="Discord User ID (e.g. 123456789012345678)" pattern="\d{17,20}" required>
+            <div class="hint">Right-click a user in Discord → Copy User ID (requires Developer Mode)</div>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Welcome</button>
+          <div id="welcome-feedback" class="feedback"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── Roles ──────────────────────────────────────────────── -->
+    <section id="section-roles" class="section">
+      <h1 class="section-title">Manage Roles</h1>
+      <div class="card">
+        <form id="form-role">
+          <div class="form-group">
+            <label>Action <span class="required">*</span></label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="role-action" value="add" checked> Add Role
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="role-action" value="remove"> Remove Role
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="role-userid">User ID <span class="required">*</span></label>
+            <input type="text" id="role-userid" placeholder="Discord User ID" pattern="\d{17,20}" required>
+          </div>
+          <div class="form-group">
+            <label for="role-select">Role <span class="required">*</span></label>
+            <select id="role-select" required>
+              <option value="">Loading roles...</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Apply</button>
+          <div id="role-feedback" class="feedback"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── Reaction Roles ────────────────────────────────────── -->
+    <section id="section-reaction-roles" class="section">
+      <h1 class="section-title">Reaction Roles</h1>
+      <div class="card">
+        <p class="section-desc">When a user reacts to a message with the configured emoji, they'll be assigned that role. Removing the reaction removes the role.</p>
+        <form id="form-reaction-role">
+          <div class="form-group">
+            <label>Message</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="rr-mode" value="new" checked> Post new message
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="rr-mode" value="existing"> Use existing message ID
+              </label>
+            </div>
+          </div>
+          <div class="form-group" id="rr-new-group">
+            <label for="rr-message-text">Message Text <span class="required">*</span></label>
+            <textarea id="rr-message-text" rows="3" placeholder="e.g. React below to get a role!"></textarea>
+          </div>
+          <div class="form-group" id="rr-existing-group" style="display:none">
+            <label for="rr-message-id">Message ID <span class="required">*</span></label>
+            <input type="text" id="rr-message-id" placeholder="Right-click message → Copy Message ID">
+          </div>
+          <div class="form-group">
+            <label for="rr-channel">Channel <span class="required">*</span></label>
+            <select id="rr-channel" required>
+              <option value="">Loading channels...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="rr-emoji">Emoji <span class="required">*</span></label>
+            <input type="text" id="rr-emoji" placeholder="Paste emoji e.g. 👍" style="max-width:140px">
+          </div>
+          <div class="form-group">
+            <label for="rr-role">Role <span class="required">*</span></label>
+            <select id="rr-role" required>
+              <option value="">Loading roles...</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Reaction Role</button>
+          <div id="rr-feedback" class="feedback"></div>
+        </form>
+      </div>
+
+      <h2 class="subsection-title">Active Configs</h2>
+      <div id="rr-list" class="rr-list">
+        <p class="section-desc">No reaction roles configured yet.</p>
+      </div>
+    </section>
+
+    <!-- ── Auto Roles ─────────────────────────────────────────── -->
+    <section id="section-auto-roles" class="section">
+      <h1 class="section-title">Auto Roles</h1>
+      <div class="card">
+        <p class="section-desc">Automatically assign roles when a member joins the server.</p>
+        <form id="form-auto-roles">
+          <div class="form-group">
+            <label>Assign immediately on join</label>
+            <div id="ar-immediate-list" class="checkbox-list">
+              <span class="muted-text">Loading roles...</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Assign after a delay</label>
+            <div class="hint" style="margin-bottom:0.6rem">⚠️ Delayed roles are lost if the bot restarts before the timer fires.</div>
+            <table class="delayed-table">
+              <thead>
+                <tr><th>Role</th><th>Minutes</th><th></th></tr>
+              </thead>
+              <tbody id="ar-delayed-body"></tbody>
+            </table>
+            <button type="button" class="btn btn-sm" id="ar-add-row" style="margin-top:0.5rem">+ Add Row</button>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Auto Roles</button>
+          <div id="ar-feedback" class="feedback"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── Embed Builder ──────────────────────────────────────── -->
+    <section id="section-embed" class="section">
+      <h1 class="section-title">Embed Builder</h1>
+      <div class="card">
+        <p class="section-desc">Send a custom Discord embed to any channel.</p>
+        <form id="form-embed">
+          <div class="form-group">
+            <label for="embed-channel">Channel <span class="required">*</span></label>
+            <select id="embed-channel" required>
+              <option value="">Loading channels...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="embed-title">Title <span class="optional">(optional)</span></label>
+            <input type="text" id="embed-title" maxlength="256" placeholder="Embed title">
+          </div>
+          <div class="form-group">
+            <label for="embed-description">Description <span class="required">*</span></label>
+            <textarea id="embed-description" maxlength="4096" rows="5" placeholder="Embed body..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="embed-color">Color</label>
+            <input type="color" id="embed-color" value="#5865F2" class="color-input">
+          </div>
+          <div class="form-group">
+            <label for="embed-footer">Footer <span class="optional">(optional)</span></label>
+            <input type="text" id="embed-footer" maxlength="2048" placeholder="Footer text">
+          </div>
+          <div class="form-group">
+            <label for="embed-thumbnail">Thumbnail URL <span class="optional">(optional)</span></label>
+            <input type="text" id="embed-thumbnail" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="embed-image">Image URL <span class="optional">(optional)</span></label>
+            <input type="text" id="embed-image" placeholder="https://...">
+          </div>
+          <button type="submit" class="btn btn-primary">Send Embed</button>
+          <div id="embed-feedback" class="feedback"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── Auto-Responders ────────────────────────────────────── -->
+    <section id="section-auto-responders" class="section">
+      <h1 class="section-title">Auto-Responders</h1>
+      <div class="card">
+        <p class="section-desc">Bot replies automatically when a message matches a trigger.</p>
+        <form id="form-ar">
+          <div class="form-group">
+            <label for="ar-trigger">Trigger <span class="required">*</span></label>
+            <input type="text" id="ar-trigger" placeholder="hello" required>
+          </div>
+          <div class="form-group">
+            <label for="ar-response">Response <span class="required">*</span></label>
+            <textarea id="ar-response" rows="3" placeholder="world" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ar-match">Match type</label>
+            <select id="ar-match">
+              <option value="contains">Contains</option>
+              <option value="exact">Exact</option>
+              <option value="startswith">Starts with</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Responder</button>
+          <div id="ar-resp-feedback" class="feedback"></div>
+        </form>
+      </div>
+      <h2 class="subsection-title">Active Responders</h2>
+      <div id="ar-resp-list"></div>
+    </section>
+
+    <!-- ── Scheduled Announcements ───────────────────────────── -->
+    <section id="section-scheduled" class="section">
+      <h1 class="section-title">Scheduled Announcements</h1>
+      <div class="card">
+        <p class="section-desc">Post messages automatically on a schedule using cron expressions.</p>
+        <form id="form-sched">
+          <div class="form-group">
+            <label for="sched-channel">Channel <span class="required">*</span></label>
+            <select id="sched-channel" required><option value="">Loading...</option></select>
+          </div>
+          <div class="form-group">
+            <label for="sched-cron">Cron Expression <span class="required">*</span></label>
+            <input type="text" id="sched-cron" placeholder="0 9 * * 1  (every Monday 9am UTC)" required>
+            <div class="hint">Format: minute hour day month weekday — <a href="https://crontab.guru" target="_blank" rel="noopener">crontab.guru</a></div>
+          </div>
+          <div class="form-group">
+            <label for="sched-message">Message <span class="required">*</span></label>
+            <textarea id="sched-message" rows="3" placeholder="Message to post..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Schedule</button>
+          <div id="sched-feedback" class="feedback"></div>
+        </form>
+      </div>
+      <h2 class="subsection-title">Active Schedules</h2>
+      <div id="sched-list"></div>
+    </section>
+
+    <!-- ── Birthdays ───────────────────────────────────────────── -->
+    <section id="section-birthdays" class="section">
+      <h1 class="section-title">Birthday Announcements</h1>
+      <div class="card">
+        <p class="section-desc">Members use <code>/birthday set</code> to register their birthday. Announcements are posted daily at midnight UTC.</p>
+        <p class="section-desc">Configure the announcement channel in <strong>Settings</strong>.</p>
+        <div id="birthday-list"><span class="muted-text">Loading...</span></div>
+      </div>
+    </section>
+
+    <!-- ── XP ─────────────────────────────────────────────────── -->
+    <section id="section-xp" class="section">
+      <h1 class="section-title">XP Leaderboard</h1>
+      <div class="card">
+        <p class="section-desc">Members earn 15–25 XP per message (60s cooldown). Configure the level-up announcement channel in <strong>Settings</strong>.</p>
+        <div id="xp-leaderboard"><span class="muted-text">Loading...</span></div>
+      </div>
+    </section>
+
+    <!-- ── Notifications ──────────────────────────────────────── -->
+    <section id="section-notif" class="section">
+      <h1 class="section-title">Notifications</h1>
+      <div class="card">
+        <p class="section-desc">Get notified when streamers go live, new YouTube videos are posted, or RSS feeds update.</p>
+        <form id="form-notif">
+          <div class="form-group">
+            <label for="notif-type">Type <span class="required">*</span></label>
+            <select id="notif-type" required>
+              <option value="twitch">Twitch</option>
+              <option value="youtube">YouTube</option>
+              <option value="rss">RSS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="notif-source">Source <span class="required">*</span></label>
+            <input type="text" id="notif-source" placeholder="Twitch username / YouTube channel ID / RSS URL" required>
+          </div>
+          <div class="form-group">
+            <label for="notif-channel">Channel <span class="required">*</span></label>
+            <select id="notif-channel" required><option value="">Loading...</option></select>
+          </div>
+          <div class="form-group">
+            <label for="notif-role">Role ping <span class="optional">(optional)</span></label>
+            <select id="notif-role"><option value="">None</option></select>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Feed</button>
+          <div id="notif-feedback" class="feedback"></div>
+        </form>
+      </div>
+      <h2 class="subsection-title">Active Feeds</h2>
+      <div id="notif-list"></div>
+    </section>
+
+    <!-- ── AI Chat ────────────────────────────────────────────── -->
+    <section id="section-ai" class="section">
+      <h1 class="section-title">AI Chat</h1>
+      <div class="card">
+        <p class="section-desc">Configure AI responses. The bot will reply when @mentioned or when someone posts in the designated AI channel. Requires the <strong>AI</strong> feature to be enabled in Features.</p>
+        <form id="form-ai">
+          <div class="form-group">
+            <label for="ai-provider">Provider</label>
+            <select id="ai-provider" onchange="updateAiProviderHint()">
+              <option value="openai">OpenAI</option>
+              <option value="xai">xAI (Grok)</option>
+              <option value="ollama">Ollama (local)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ai-model">Model <span class="optional">(optional — uses provider default)</span></label>
+            <input type="text" id="ai-model" placeholder="e.g. gpt-4o, grok-beta, llama3.2">
+            <small id="ai-model-hint" class="muted-text"></small>
+          </div>
+          <div class="form-group">
+            <label for="ai-channel">AI Channel <span class="optional">(optional)</span></label>
+            <select id="ai-channel"><option value="">None — @mention only</option></select>
+            <small class="muted-text">All messages in this channel will be sent to the AI.</small>
+          </div>
+          <div class="form-group">
+            <label for="ai-system-prompt">System Prompt <span class="optional">(optional)</span></label>
+            <textarea id="ai-system-prompt" rows="3" placeholder="You are a helpful Discord bot assistant."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save AI Settings</button>
+          <div id="ai-feedback" class="feedback"></div>
+        </form>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h2 class="subsection-title" style="margin-top:0">API Keys</h2>
+        <p class="section-desc">Set these in your <code>.env</code> file — they are not stored in the dashboard for security.</p>
+        <ul class="section-desc" style="margin-top:.5rem;padding-left:1.2rem">
+          <li><code>XAI_API_KEY</code> — xAI / Grok</li>
+          <li><code>OPENAI_API_KEY</code> — OpenAI</li>
+          <li><code>OLLAMA_BASE_URL</code> — Ollama base URL (default: <code>http://localhost:11434</code>)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── Features ───────────────────────────────────────────── -->
+    <section id="section-features" class="section">
+      <h1 class="section-title">Features</h1>
+      <div class="card">
+        <p class="section-desc">Toggle features on or off for this server.</p>
+        <div id="features-list"><span class="muted-text">Loading...</span></div>
+      </div>
+    </section>
+
+    <!-- ── Logs ───────────────────────────────────────────────── -->
+    <section id="section-logs" class="section">
+      <h1 class="section-title">Activity Log <span class="badge" id="log-count">0</span></h1>
+      <div class="card">
+        <div class="log-controls">
+          <label class="toggle-label">
+            <input type="checkbox" id="log-auto-refresh" checked>
+            Auto-refresh every 5s
+          </label>
+          <button class="btn btn-sm" id="log-refresh-btn">Refresh</button>
+        </div>
+        <div class="log-table-wrap">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Type</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody id="log-body">
+              <tr><td colspan="3" class="empty-row">No log entries yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Settings ───────────────────────────────────────────── -->
+    <section id="section-settings" class="section">
+      <h1 class="section-title">Settings</h1>
+      <div class="card">
+        <p class="section-desc">Changes apply immediately at runtime. To persist them across restarts, copy the channel ID into <code>WELCOME_CHANNEL_ID</code> in your <code>.env</code>.</p>
+        <form id="form-settings">
+          <div class="form-group">
+            <label for="settings-guild">Active Server</label>
+            <input type="text" id="settings-guild" disabled>
+          </div>
+          <div class="form-group">
+            <label for="settings-welcome-channel">Welcome Channel</label>
+            <select id="settings-welcome-channel">
+              <option value="">Loading channels...</option>
+            </select>
+            <div class="hint">The channel where auto-welcome messages are posted when members join.</div>
+          </div>
+          <div class="form-group">
+            <label for="settings-log-channel">Audit Log Channel</label>
+            <select id="settings-log-channel">
+              <option value="">Loading channels...</option>
+            </select>
+            <div class="hint">Receives join, leave, ban, unban, and role-change events. Leave blank to disable.</div>
+          </div>
+          <div class="form-group">
+            <label for="settings-birthday-channel">Birthday Channel</label>
+            <select id="settings-birthday-channel">
+              <option value="">Loading channels...</option>
+            </select>
+            <div class="hint">Where birthday announcements are posted each day at midnight UTC.</div>
+          </div>
+          <div class="form-group">
+            <label for="settings-xp-channel">XP Level-Up Channel</label>
+            <select id="settings-xp-channel">
+              <option value="">Loading channels...</option>
+            </select>
+            <div class="hint">Where level-up messages are posted. Leave blank to announce in the message's channel.</div>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+          <div id="settings-feedback" class="feedback"></div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ── Navigation ─────────────────────────────────────────────────────────
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
+    function showSection(name) {
+      navLinks.forEach(l => l.classList.toggle('active', l.dataset.section === name));
+      sections.forEach(s => s.classList.toggle('active', s.id === `section-${name}`));
+      if (name === 'stats')          loadStats();
+      if (name === 'announce')       loadChannels();
+      if (name === 'roles')          loadRoles();
+      if (name === 'logs')           loadLogs();
+      if (name === 'settings')       loadSettings();
+      if (name === 'reaction-roles')  loadReactionRoles();
+      if (name === 'auto-roles')      loadAutoRoles();
+      if (name === 'embed')           loadEmbedChannels();
+      if (name === 'auto-responders') loadAutoResponders();
+      if (name === 'scheduled')       loadScheduled();
+      if (name === 'birthdays')       loadBirthdays();
+      if (name === 'xp')              loadXpLeaderboard();
+      if (name === 'notif')           loadNotifications();
+      if (name === 'ai')              loadAiSection();
+      if (name === 'features')        loadFeatures();
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        showSection(link.dataset.section);
+      });
+    });
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    function setFeedback(id, msg, isError = false) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = `feedback ${isError ? 'feedback-error' : 'feedback-ok'}`;
+      if (!isError) setTimeout(() => { el.textContent = ''; el.className = 'feedback'; }, 4000);
+    }
+
+    async function apiFetch(path, opts = {}) {
+      const res = await fetch(path, {
+        headers: { 'Content-Type': 'application/json' },
+        ...opts,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      return data;
+    }
+
+    function formatUptime(ms) {
+      if (!ms) return '0s';
+      const s = Math.floor(ms / 1000);
+      const m = Math.floor(s / 60);
+      const h = Math.floor(m / 60);
+      const d = Math.floor(h / 24);
+      if (d) return `${d}d ${h % 24}h ${m % 60}m`;
+      if (h) return `${h}h ${m % 60}m`;
+      if (m) return `${m}m ${s % 60}s`;
+      return `${s}s`;
+    }
+
+    // ── Stats ──────────────────────────────────────────────────────────────
+    async function loadStats() {
+      try {
+        const d = await apiFetch('/api/stats');
+        document.getElementById('stat-status').textContent   = d.status;
+        document.getElementById('stat-status').className     = `stat-value status-${d.status}`;
+        document.getElementById('stat-tag').textContent      = d.botTag;
+        document.getElementById('stat-uptime').textContent   = formatUptime(d.uptimeMs);
+        document.getElementById('stat-guild').textContent    = d.guildName;
+        document.getElementById('stat-members').textContent  = d.memberCount.toLocaleString();
+        document.getElementById('stat-commands').textContent = d.commandCount;
+      } catch (e) {
+        console.error('Stats error:', e);
+      }
+    }
+
+    setInterval(() => {
+      if (document.getElementById('section-stats').classList.contains('active')) loadStats();
+    }, 30_000);
+
+    // ── Channels ───────────────────────────────────────────────────────────
+    async function loadChannels() {
+      const sel = document.getElementById('announce-channel');
+      try {
+        const channels = await apiFetch('/api/channels');
+        sel.innerHTML = channels.length
+          ? channels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('')
+          : '<option value="">No text channels found</option>';
+      } catch {
+        sel.innerHTML = '<option value="">Failed to load channels</option>';
+      }
+    }
+
+    // ── Roles ──────────────────────────────────────────────────────────────
+    async function loadRoles() {
+      const sel = document.getElementById('role-select');
+      try {
+        const roles = await apiFetch('/api/roles');
+        sel.innerHTML = roles.length
+          ? roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('')
+          : '<option value="">No manageable roles found</option>';
+      } catch {
+        sel.innerHTML = '<option value="">Failed to load roles</option>';
+      }
+    }
+
+    // ── Announce form ──────────────────────────────────────────────────────
+    document.getElementById('form-announce').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/announce', {
+          method: 'POST',
+          body: JSON.stringify({
+            title:       document.getElementById('announce-title').value,
+            description: document.getElementById('announce-body').value,
+            date:        document.getElementById('announce-date').value || undefined,
+            channelId:   document.getElementById('announce-channel').value,
+          }),
+        });
+        setFeedback('announce-feedback', 'Announcement posted!');
+        e.target.reset();
+      } catch (err) {
+        setFeedback('announce-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Welcome form ───────────────────────────────────────────────────────
+    document.getElementById('form-welcome').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/welcome', {
+          method: 'POST',
+          body: JSON.stringify({ userId: document.getElementById('welcome-userid').value }),
+        });
+        setFeedback('welcome-feedback', 'Welcome message sent!');
+        e.target.reset();
+      } catch (err) {
+        setFeedback('welcome-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Role form ──────────────────────────────────────────────────────────
+    document.getElementById('form-role').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      const action = document.querySelector('input[name="role-action"]:checked').value;
+      try {
+        await apiFetch('/api/role', {
+          method: 'POST',
+          body: JSON.stringify({
+            action,
+            userId: document.getElementById('role-userid').value,
+            roleId: document.getElementById('role-select').value,
+          }),
+        });
+        const roleName = document.getElementById('role-select').selectedOptions[0]?.text;
+        setFeedback('role-feedback', `Role "${roleName}" ${action === 'add' ? 'added' : 'removed'} successfully.`);
+      } catch (err) {
+        setFeedback('role-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Logs ───────────────────────────────────────────────────────────────
+    const TYPE_LABELS = { info: 'INFO', join: 'JOIN', command: 'CMD', action: 'ACTION', warn: 'WARN' };
+
+    async function loadLogs() {
+      try {
+        const logs = await apiFetch('/api/logs');
+        const tbody = document.getElementById('log-body');
+        document.getElementById('log-count').textContent = logs.length;
+        if (!logs.length) {
+          tbody.innerHTML = '<tr><td colspan="3" class="empty-row">No log entries yet.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = logs.map(entry => {
+          const time = new Date(entry.timestamp).toLocaleTimeString();
+          const typeLabel = TYPE_LABELS[entry.type] ?? entry.type;
+          return `<tr>
+            <td class="log-time">${time}</td>
+            <td><span class="log-badge log-${entry.type}">${typeLabel}</span></td>
+            <td>${entry.message}</td>
+          </tr>`;
+        }).join('');
+      } catch (e) {
+        console.error('Logs error:', e);
+      }
+    }
+
+    let logInterval = null;
+    const logAutoRefresh = document.getElementById('log-auto-refresh');
+    const logRefreshBtn = document.getElementById('log-refresh-btn');
+
+    function startLogRefresh() {
+      if (logInterval) clearInterval(logInterval);
+      logInterval = setInterval(() => {
+        if (document.getElementById('section-logs').classList.contains('active')) loadLogs();
+      }, 5000);
+    }
+
+    logAutoRefresh.addEventListener('change', () => {
+      if (logAutoRefresh.checked) startLogRefresh();
+      else clearInterval(logInterval);
+    });
+
+    logRefreshBtn.addEventListener('click', loadLogs);
+    startLogRefresh();
+
+    // ── Settings ───────────────────────────────────────────────────────────
+    async function loadSettings() {
+      try {
+        const [s, channels] = await Promise.all([
+          apiFetch('/api/settings'),
+          apiFetch('/api/channels'),
+        ]);
+
+        document.getElementById('settings-guild').value = s.guildName ?? s.guildId ?? '—';
+
+        const channelOptions = '<option value="">(none)</option>' +
+          channels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('');
+
+        const welcomeSel = document.getElementById('settings-welcome-channel');
+        welcomeSel.innerHTML = channelOptions;
+        if (s.welcomeChannelId) welcomeSel.value = s.welcomeChannelId;
+
+        const logSel = document.getElementById('settings-log-channel');
+        logSel.innerHTML = channelOptions;
+        if (s.logChannelId) logSel.value = s.logChannelId;
+
+        const bdSel = document.getElementById('settings-birthday-channel');
+        bdSel.innerHTML = channelOptions;
+        if (s.birthdayChannelId) bdSel.value = s.birthdayChannelId;
+
+        const xpSel = document.getElementById('settings-xp-channel');
+        xpSel.innerHTML = channelOptions;
+        if (s.xpAnnouncementsChannelId) xpSel.value = s.xpAnnouncementsChannelId;
+      } catch (e) {
+        console.error('Settings error:', e);
+      }
+    }
+
+    document.getElementById('form-settings').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/settings', {
+          method: 'POST',
+          body: JSON.stringify({
+            welcomeChannelId:          document.getElementById('settings-welcome-channel').value,
+            logChannelId:              document.getElementById('settings-log-channel').value,
+            birthdayChannelId:         document.getElementById('settings-birthday-channel').value,
+            xpAnnouncementsChannelId:  document.getElementById('settings-xp-channel').value,
+          }),
+        });
+        setFeedback('settings-feedback', 'Settings saved!');
+      } catch (err) {
+        setFeedback('settings-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Reaction Roles ─────────────────────────────────────────────────────
+    let _rrChannels = [];
+    let _rrRoles = [];
+
+    async function loadReactionRoles() {
+      try {
+        [_rrChannels, _rrRoles] = await Promise.all([apiFetch('/api/channels'), apiFetch('/api/roles')]);
+        const chanSel = document.getElementById('rr-channel');
+        chanSel.innerHTML = _rrChannels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('');
+        const roleSel = document.getElementById('rr-role');
+        roleSel.innerHTML = _rrRoles.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+      } catch { /* silently fail */ }
+      await renderReactionRoleList();
+    }
+
+    async function renderReactionRoleList() {
+      const container = document.getElementById('rr-list');
+      try {
+        const configs = await apiFetch('/api/reaction-roles');
+        if (!configs.length) {
+          container.innerHTML = '<p class="section-desc">No reaction roles configured yet.</p>';
+          return;
+        }
+        container.innerHTML = configs.map(cfg => {
+          const chanName = _rrChannels.find(c => c.id === cfg.channelId)?.name ?? cfg.channelId;
+          const rules = cfg.rules.map(r => {
+            const roleName = _rrRoles.find(x => x.id === r.roleId)?.name ?? r.roleId;
+            return `<span class="rr-rule">${r.emoji} → ${roleName}</span>`;
+          }).join('');
+          return `<div class="rr-item">
+            <div class="rr-item-info">
+              <span class="rr-channel">#${chanName}</span>
+              <span class="rr-msgid">msg: ${cfg.messageId}</span>
+              <div class="rr-rules">${rules}</div>
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="deleteReactionRole('${cfg.id}')">Delete</button>
+          </div>`;
+        }).join('');
+      } catch {
+        container.innerHTML = '<p class="section-desc">Failed to load configs.</p>';
+      }
+    }
+
+    async function deleteReactionRole(id) {
+      if (!confirm('Remove this reaction role config?')) return;
+      try {
+        await apiFetch(`/api/reaction-roles/${id}`, { method: 'DELETE' });
+        await renderReactionRoleList();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Toggle new/existing message fields
+    document.querySelectorAll('input[name="rr-mode"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const isNew = document.querySelector('input[name="rr-mode"]:checked').value === 'new';
+        document.getElementById('rr-new-group').style.display      = isNew ? '' : 'none';
+        document.getElementById('rr-existing-group').style.display = isNew ? 'none' : '';
+      });
+    });
+
+    document.getElementById('form-reaction-role').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      const mode = document.querySelector('input[name="rr-mode"]:checked').value;
+      try {
+        await apiFetch('/api/reaction-roles', {
+          method: 'POST',
+          body: JSON.stringify({
+            channelId:     document.getElementById('rr-channel').value,
+            createMessage: mode === 'new',
+            messageText:   document.getElementById('rr-message-text').value || undefined,
+            messageId:     document.getElementById('rr-message-id').value || undefined,
+            emoji:         document.getElementById('rr-emoji').value.trim(),
+            roleId:        document.getElementById('rr-role').value,
+          }),
+        });
+        setFeedback('rr-feedback', 'Reaction role added!');
+        e.target.reset();
+        document.getElementById('rr-new-group').style.display      = '';
+        document.getElementById('rr-existing-group').style.display = 'none';
+        await renderReactionRoleList();
+      } catch (err) {
+        setFeedback('rr-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Auto Roles ─────────────────────────────────────────────────────────
+    let _arRoles = [];
+
+    async function loadAutoRoles() {
+      try {
+        [_arRoles] = await Promise.all([apiFetch('/api/roles')]);
+        const [arData] = await Promise.all([apiFetch('/api/auto-roles')]);
+
+        // Render immediate checkboxes
+        const immList = document.getElementById('ar-immediate-list');
+        if (!_arRoles.length) {
+          immList.innerHTML = '<span class="muted-text">No manageable roles found.</span>';
+        } else {
+          immList.innerHTML = _arRoles.map(r => `
+            <label class="checkbox-label">
+              <input type="checkbox" name="ar-immediate" value="${r.id}"
+                ${arData.immediate.includes(r.id) ? 'checked' : ''}>
+              ${r.name}
+            </label>`).join('');
+        }
+
+        // Render delayed rows
+        const tbody = document.getElementById('ar-delayed-body');
+        tbody.innerHTML = '';
+        for (const d of arData.delayed) {
+          tbody.appendChild(makeDelayedRow(d.roleId, d.delayMinutes));
+        }
+      } catch (e) {
+        console.error('Auto roles load error:', e);
+      }
+    }
+
+    function makeDelayedRow(roleId = '', minutes = 10) {
+      const tr = document.createElement('tr');
+      tr.className = 'delayed-row';
+      const roleOptions = _arRoles.map(r =>
+        `<option value="${r.id}" ${r.id === roleId ? 'selected' : ''}>${r.name}</option>`
+      ).join('');
+      tr.innerHTML = `
+        <td><select class="ar-delayed-role">${roleOptions}</select></td>
+        <td><input type="number" class="ar-delayed-minutes" value="${minutes}" min="1" max="10080" style="width:80px"></td>
+        <td><button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">✕</button></td>`;
+      return tr;
+    }
+
+    document.getElementById('ar-add-row').addEventListener('click', () => {
+      document.getElementById('ar-delayed-body').appendChild(makeDelayedRow());
+    });
+
+    document.getElementById('form-auto-roles').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      const immediate = [...document.querySelectorAll('input[name="ar-immediate"]:checked')].map(el => el.value);
+      const delayed = [...document.querySelectorAll('.delayed-row')].map(row => ({
+        roleId:       row.querySelector('.ar-delayed-role').value,
+        delayMinutes: parseInt(row.querySelector('.ar-delayed-minutes').value, 10) || 10,
+      }));
+      try {
+        await apiFetch('/api/auto-roles', { method: 'POST', body: JSON.stringify({ immediate, delayed }) });
+        setFeedback('ar-feedback', 'Auto roles saved!');
+      } catch (err) {
+        setFeedback('ar-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Embed Builder ──────────────────────────────────────────────────────
+    async function loadEmbedChannels() {
+      const sel = document.getElementById('embed-channel');
+      try {
+        const channels = await apiFetch('/api/channels');
+        sel.innerHTML = channels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('');
+      } catch {
+        sel.innerHTML = '<option value="">Failed to load channels</option>';
+      }
+    }
+
+    document.getElementById('form-embed').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/embed', {
+          method: 'POST',
+          body: JSON.stringify({
+            channelId:    document.getElementById('embed-channel').value,
+            title:        document.getElementById('embed-title').value || undefined,
+            description:  document.getElementById('embed-description').value,
+            color:        document.getElementById('embed-color').value,
+            footer:       document.getElementById('embed-footer').value || undefined,
+            thumbnailUrl: document.getElementById('embed-thumbnail').value || undefined,
+            imageUrl:     document.getElementById('embed-image').value || undefined,
+          }),
+        });
+        setFeedback('embed-feedback', 'Embed sent!');
+        e.target.reset();
+        document.getElementById('embed-color').value = '#5865F2';
+      } catch (err) {
+        setFeedback('embed-feedback', err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Me (sidebar user info) ─────────────────────────────────────────────
+    async function loadMe() {
+      try {
+        const me = await apiFetch('/api/me');
+        document.getElementById('sidebar-tag').textContent   = me.tag;
+        document.getElementById('sidebar-guild').textContent = me.guildName;
+        const avatarEl = document.getElementById('sidebar-avatar');
+        if (me.avatar) {
+          avatarEl.innerHTML = `<img src="${me.avatar}" alt="${me.tag}" width="32" height="32">`;
+        } else {
+          avatarEl.textContent = me.tag.charAt(0).toUpperCase();
+        }
+      } catch (e) {
+        console.error('Me error:', e);
+      }
+    }
+
+    // ── Auto-Responders ────────────────────────────────────────────────────
+    async function loadAutoResponders() {
+      try {
+        const rows = await apiFetch('/api/auto-responders');
+        const el = document.getElementById('ar-resp-list');
+        if (!rows.length) { el.innerHTML = '<p class="section-desc">No auto-responders yet.</p>'; return; }
+        el.innerHTML = rows.map(r => `
+          <div class="rr-item">
+            <div class="rr-item-info">
+              <span class="rr-channel">${r.match_type}</span>
+              <strong>${r.trigger}</strong> → ${r.response}
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="deleteAutoResponder('${r.id}')">Delete</button>
+          </div>`).join('');
+      } catch { document.getElementById('ar-resp-list').innerHTML = '<p class="section-desc">Failed to load.</p>'; }
+    }
+
+    async function deleteAutoResponder(id) {
+      if (!confirm('Delete this auto-responder?')) return;
+      try { await apiFetch(`/api/auto-responders/${id}`, { method: 'DELETE' }); await loadAutoResponders(); }
+      catch (err) { alert(err.message); }
+    }
+
+    document.getElementById('form-ar').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/auto-responders', {
+          method: 'POST',
+          body: JSON.stringify({
+            trigger:    document.getElementById('ar-trigger').value,
+            response:   document.getElementById('ar-response').value,
+            match_type: document.getElementById('ar-match').value,
+          }),
+        });
+        setFeedback('ar-resp-feedback', 'Auto-responder added!');
+        e.target.reset();
+        await loadAutoResponders();
+      } catch (err) { setFeedback('ar-resp-feedback', err.message, true); }
+      finally { btn.disabled = false; }
+    });
+
+    // ── Scheduled Announcements ────────────────────────────────────────────
+    async function loadScheduled() {
+      try {
+        const [rows, channels] = await Promise.all([apiFetch('/api/scheduled-announcements'), apiFetch('/api/channels')]);
+        const sel = document.getElementById('sched-channel');
+        sel.innerHTML = channels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('');
+        const el = document.getElementById('sched-list');
+        if (!rows.length) { el.innerHTML = '<p class="section-desc">No schedules yet.</p>'; return; }
+        el.innerHTML = rows.map(r => {
+          const ch = channels.find(c => c.id === r.channel_id);
+          return `<div class="rr-item">
+            <div class="rr-item-info">
+              <span class="rr-channel">#${ch?.name ?? r.channel_id}</span>
+              <code>${r.cron}</code> — ${r.message.slice(0, 60)}${r.message.length > 60 ? '...' : ''}
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="deleteScheduled('${r.id}')">Delete</button>
+          </div>`;
+        }).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function deleteScheduled(id) {
+      if (!confirm('Delete this schedule?')) return;
+      try { await apiFetch(`/api/scheduled-announcements/${id}`, { method: 'DELETE' }); await loadScheduled(); }
+      catch (err) { alert(err.message); }
+    }
+
+    document.getElementById('form-sched').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/scheduled-announcements', {
+          method: 'POST',
+          body: JSON.stringify({
+            channelId: document.getElementById('sched-channel').value,
+            cron:      document.getElementById('sched-cron').value,
+            message:   document.getElementById('sched-message').value,
+          }),
+        });
+        setFeedback('sched-feedback', 'Schedule added!');
+        e.target.reset();
+        await loadScheduled();
+      } catch (err) { setFeedback('sched-feedback', err.message, true); }
+      finally { btn.disabled = false; }
+    });
+
+    // ── Birthdays ──────────────────────────────────────────────────────────
+    async function loadBirthdays() {
+      const el = document.getElementById('birthday-list');
+      try {
+        const settings = await apiFetch('/api/settings');
+        const channel = settings.birthdayChannelId
+          ? `<strong>Announcement channel:</strong> <#${settings.birthdayChannelId}>`
+          : '<em>No birthday channel set. Configure in Settings.</em>';
+        el.innerHTML = `<p class="section-desc">${channel}</p><p class="section-desc">Members register via <code>/birthday set</code>.</p>`;
+      } catch { el.innerHTML = '<p class="section-desc">Failed to load.</p>'; }
+    }
+
+    // ── XP Leaderboard ─────────────────────────────────────────────────────
+    async function loadXpLeaderboard() {
+      const el = document.getElementById('xp-leaderboard');
+      try {
+        const rows = await apiFetch('/api/xp-leaderboard');
+        if (!rows.length) { el.innerHTML = '<p class="section-desc">No XP data yet.</p>'; return; }
+        const medals = ['🥇', '🥈', '🥉'];
+        el.innerHTML = '<table class="log-table"><thead><tr><th>Rank</th><th>User ID</th><th>Level</th><th>XP</th></tr></thead><tbody>' +
+          rows.map((r, i) => `<tr><td>${medals[i] ?? i + 1}</td><td>${r.user_id}</td><td>${r.level}</td><td>${r.xp.toLocaleString()}</td></tr>`).join('') +
+          '</tbody></table>';
+      } catch { el.innerHTML = '<p class="section-desc">Failed to load.</p>'; }
+    }
+
+    // ── Notifications ──────────────────────────────────────────────────────
+    async function loadNotifications() {
+      try {
+        const [rows, channels, roles] = await Promise.all([
+          apiFetch('/api/notification-feeds'),
+          apiFetch('/api/channels'),
+          apiFetch('/api/roles'),
+        ]);
+        document.getElementById('notif-channel').innerHTML =
+          channels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('');
+        document.getElementById('notif-role').innerHTML =
+          '<option value="">None</option>' + roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+        const el = document.getElementById('notif-list');
+        if (!rows.length) { el.innerHTML = '<p class="section-desc">No feeds configured.</p>'; return; }
+        el.innerHTML = rows.map(r => `
+          <div class="rr-item">
+            <div class="rr-item-info">
+              <span class="rr-channel">${r.type}</span>
+              <strong>${r.source}</strong> → <#${r.channel_id}>${r.role_ping ? ` @role` : ''}
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="deleteNotifFeed('${r.id}')">Delete</button>
+          </div>`).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function deleteNotifFeed(id) {
+      if (!confirm('Delete this notification feed?')) return;
+      try { await apiFetch(`/api/notification-feeds/${id}`, { method: 'DELETE' }); await loadNotifications(); }
+      catch (err) { alert(err.message); }
+    }
+
+    document.getElementById('form-notif').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        await apiFetch('/api/notification-feeds', {
+          method: 'POST',
+          body: JSON.stringify({
+            type:      document.getElementById('notif-type').value,
+            source:    document.getElementById('notif-source').value,
+            channelId: document.getElementById('notif-channel').value,
+            role_ping: document.getElementById('notif-role').value || undefined,
+          }),
+        });
+        setFeedback('notif-feedback', 'Feed added!');
+        e.target.reset();
+        await loadNotifications();
+      } catch (err) { setFeedback('notif-feedback', err.message, true); }
+      finally { btn.disabled = false; }
+    });
+
+    // ── Features ───────────────────────────────────────────────────────────
+    const FEATURE_LABELS = {
+      auto_responder:           '💬 Auto-Responder',
+      scheduled_announcements:  '🕐 Scheduled Announcements',
+      birthdays:                '🎂 Birthday Announcements',
+      role_menus:               '🎛️ Self-Assignable Role Menus',
+      xp:                       '⭐ XP & Leveling',
+      music:                    '🎵 Music Playback',
+      notifications:            '🔔 Notifications',
+      ai:                       '🤖 AI Chat',
+    };
+
+    async function loadFeatures() {
+      const el = document.getElementById('features-list');
+      try {
+        const flags = await apiFetch('/api/features');
+        el.innerHTML = Object.entries(flags).map(([feature, enabled]) => `
+          <label class="checkbox-label feature-toggle">
+            <input type="checkbox" ${enabled ? 'checked' : ''} onchange="toggleFeature('${feature}', this.checked)">
+            ${FEATURE_LABELS[feature] ?? feature}
+          </label>`).join('');
+      } catch { el.innerHTML = '<p class="section-desc">Failed to load features.</p>'; }
+    }
+
+    async function toggleFeature(feature, enabled) {
+      try {
+        await apiFetch('/api/features', {
+          method: 'POST',
+          body: JSON.stringify({ feature, enabled }),
+        });
+      } catch (err) { alert('Failed to update: ' + err.message); }
+    }
+
+    // ── Deploy commands ────────────────────────────────────────────────────
+    async function deployCommands() {
+      const btn = document.getElementById('deploy-btn');
+      const fb  = document.getElementById('deploy-feedback');
+      btn.disabled = true;
+      fb.textContent = 'Deploying…';
+      fb.className = 'feedback';
+      try {
+        const d = await apiFetch('/api/deploy', { method: 'POST' });
+        fb.textContent = `✅ ${d.count} command(s) registered!`;
+        fb.className = 'feedback feedback-ok';
+        setTimeout(() => { fb.textContent = ''; fb.className = 'feedback'; }, 5000);
+      } catch (err) {
+        fb.textContent = `❌ ${err.message}`;
+        fb.className = 'feedback feedback-error';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ── AI settings ────────────────────────────────────────────────────────
+    async function loadAiSection() {
+      try {
+        const channels = await apiFetch('/api/channels');
+        const sel = document.getElementById('ai-channel');
+        const current = sel.value;
+        sel.innerHTML = '<option value="">None — @mention only</option>' +
+          channels.map(c => `<option value="${c.id}">#${c.name}</option>`).join('');
+        if (current) sel.value = current;
+      } catch { /* ignore */ }
+      await loadAiSettings();
+    }
+
+    const AI_DEFAULTS = {
+      openai: 'gpt-4o-mini',
+      xai:    'grok-beta',
+      ollama: 'llama3.2',
+    };
+
+    function updateAiProviderHint() {
+      const provider = document.getElementById('ai-provider').value;
+      document.getElementById('ai-model-hint').textContent = `Default model: ${AI_DEFAULTS[provider] ?? ''}`;
+    }
+
+    async function loadAiSettings() {
+      try {
+        const s = await apiFetch('/api/ai-settings');
+        document.getElementById('ai-provider').value       = s.provider ?? 'openai';
+        document.getElementById('ai-model').value          = s.model ?? '';
+        document.getElementById('ai-system-prompt').value  = s.systemPrompt ?? '';
+        updateAiProviderHint();
+        const sel = document.getElementById('ai-channel');
+        if (s.aiChannelId) {
+          // Add saved channel option so it shows correctly before channels load
+          let opt = sel.querySelector(`option[value="${s.aiChannelId}"]`);
+          if (!opt) { opt = document.createElement('option'); opt.value = s.aiChannelId; opt.textContent = '#' + s.aiChannelId; sel.appendChild(opt); }
+          sel.value = s.aiChannelId;
+        }
+      } catch { /* ignore */ }
+    }
+
+    document.getElementById('form-ai').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fb = document.getElementById('ai-feedback');
+      fb.textContent = 'Saving…';
+      fb.className = 'feedback';
+      try {
+        await apiFetch('/api/ai-settings', {
+          method: 'POST',
+          body: JSON.stringify({
+            provider:     document.getElementById('ai-provider').value,
+            model:        document.getElementById('ai-model').value.trim(),
+            systemPrompt: document.getElementById('ai-system-prompt').value.trim(),
+            aiChannelId:  document.getElementById('ai-channel').value,
+          }),
+        });
+        fb.textContent = '✅ Saved!';
+        fb.className = 'feedback feedback-ok';
+        setTimeout(() => { fb.textContent = ''; fb.className = 'feedback'; }, 3000);
+      } catch (err) {
+        fb.textContent = '❌ ' + err.message;
+        fb.className = 'feedback feedback-error';
+      }
+    });
+
+    // ── Init ───────────────────────────────────────────────────────────────
+    loadMe();
+    loadStats();
+    loadAiSettings();
+  </script>
+</body>
+</html>
