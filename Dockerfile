@@ -2,9 +2,9 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install build tools for better-sqlite3 + ffmpeg for music playback
+# Install build tools for better-sqlite3
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ ffmpeg \
+    python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./

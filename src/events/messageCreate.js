@@ -12,6 +12,39 @@ function levelToXp(level) {
   return Math.pow(level / 0.1, 2);
 }
 
+// Resolve @Name patterns to Discord mentions in custom command responses
+async function resolveMentions(text, guild) {
+  const matches = [...text.matchAll(/@([^\s@#]+)/g)];
+  for (const [match, name] of matches) {
+    // Raw numeric ID — convert directly
+    if (/^\d{17,20}$/.test(name)) {
+      text = text.replace(match, `<@${name}>`);
+      continue;
+    }
+    const lower = name.toLowerCase();
+    // Try roles first (always cached)
+    const role = guild.roles.cache.find(r => r.name.toLowerCase() === lower);
+    if (role) { text = text.replace(match, `<@&${role.id}>`); continue; }
+    // Try member cache, then fetch from API if not found
+    let member = guild.members.cache.find(m =>
+      m.user.username.toLowerCase() === lower ||
+      m.displayName.toLowerCase() === lower
+    );
+    if (!member) {
+      try {
+        const results = await guild.members.fetch({ query: lower, limit: 1 });
+        const found = results.first();
+        if (
+          found?.user.username.toLowerCase() === lower ||
+          found?.displayName.toLowerCase() === lower
+        ) member = found;
+      } catch { /* ignore fetch errors */ }
+    }
+    if (member) text = text.replace(match, `<@${member.id}>`);
+  }
+  return text;
+}
+
 module.exports = {
   name: Events.MessageCreate,
   once: false,
@@ -21,6 +54,24 @@ module.exports = {
 
     const guildId = message.guild.id;
     const content = message.content.toLowerCase();
+
+    // ── Custom prefix commands ───────────────────────────────────────────────
+    if (db.isEnabled(guildId, 'custom_commands')) {
+      const prefix = db.guildGet(guildId, 'prefix') ?? '!';
+      if (message.content.startsWith(prefix)) {
+        const cmdName = message.content.slice(prefix.length).trim().split(/\s+/)[0].toLowerCase();
+        if (cmdName) {
+          const cmd = db.db
+            .prepare('SELECT response FROM custom_commands WHERE guild_id = ? AND name = ?')
+            .get(guildId, cmdName);
+          if (cmd) {
+            const resolved = await resolveMentions(cmd.response, message.guild);
+            await message.channel.send({ content: resolved, allowedMentions: { parse: ['roles', 'users'] } }).catch(() => null);
+            return;
+          }
+        }
+      }
+    }
 
     // ── Auto-responder ──────────────────────────────────────────────────────
     if (db.isEnabled(guildId, 'auto_responder')) {

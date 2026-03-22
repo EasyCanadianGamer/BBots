@@ -523,6 +523,51 @@ function setupRoutes(app, getClient) {
     });
   });
 
+  // ── Custom commands ─────────────────────────────────────────────────────────
+  app.get('/api/prefix', requireAuth, (req, res) => {
+    const guildId = getActiveGuildId(req);
+    res.json({ prefix: db.guildGet(guildId, 'prefix') ?? '!' });
+  });
+
+  app.post('/api/prefix', requireAuth, (req, res) => {
+    const { prefix } = req.body;
+    if (!prefix || typeof prefix !== 'string' || prefix.length > 5) {
+      return res.status(400).json({ error: 'Prefix must be 1–5 characters' });
+    }
+    const guildId = getActiveGuildId(req);
+    db.guildSet(guildId, 'prefix', prefix.trim());
+    logger.add('info', `Prefix set to "${prefix.trim()}" via dashboard`);
+    res.json({ ok: true });
+  });
+
+  app.get('/api/custom-commands', requireAuth, (req, res) => {
+    const guildId = getActiveGuildId(req);
+    const rows = db.db.prepare('SELECT * FROM custom_commands WHERE guild_id = ? ORDER BY name').all(guildId);
+    res.json(rows);
+  });
+
+  app.post('/api/custom-commands', requireAuth, (req, res) => {
+    const { name, response } = req.body;
+    if (!name || !response) return res.status(400).json({ error: 'name and response are required' });
+    const cleanName = name.trim().toLowerCase().replace(/\s+/g, '_');
+    const guildId = getActiveGuildId(req);
+    const id = crypto.randomUUID();
+    try {
+      db.db.prepare('INSERT INTO custom_commands (id, guild_id, name, response) VALUES (?, ?, ?, ?)')
+        .run(id, guildId, cleanName, response.trim());
+      logger.add('action', `Custom command !${cleanName} added via dashboard`);
+      res.json({ ok: true, id });
+    } catch (err) {
+      if (err.message.includes('UNIQUE')) return res.status(409).json({ error: `Command "${cleanName}" already exists` });
+      throw err;
+    }
+  });
+
+  app.delete('/api/custom-commands/:id', requireAuth, (req, res) => {
+    db.db.prepare('DELETE FROM custom_commands WHERE id = ?').run(req.params.id);
+    res.json({ ok: true });
+  });
+
   app.post('/api/ai-settings', requireAuth, (req, res) => {
     const { provider, model, systemPrompt, aiChannelId } = req.body;
     const guildId = getActiveGuildId(req);

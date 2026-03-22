@@ -96,6 +96,14 @@ db.exec(`
     last_seen TEXT,
     role_ping TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS custom_commands (
+    id        TEXT PRIMARY KEY,
+    guild_id  TEXT NOT NULL,
+    name      TEXT NOT NULL,
+    response  TEXT NOT NULL,
+    UNIQUE(guild_id, name)
+  );
 `);
 
 // ── Prepared statements (KV) ──────────────────────────────────────────────────
@@ -149,7 +157,7 @@ const stmtFlagGet = db.prepare('SELECT enabled FROM feature_flags WHERE guild_id
 const stmtFlagSet = db.prepare('INSERT OR REPLACE INTO feature_flags (guild_id, feature, enabled) VALUES (?, ?, ?)');
 const stmtFlagAll = db.prepare('SELECT feature, enabled FROM feature_flags WHERE guild_id = ?');
 
-const ALL_FEATURES = ['auto_responder', 'scheduled_announcements', 'birthdays', 'role_menus', 'xp', 'music', 'notifications', 'ai'];
+const ALL_FEATURES = ['auto_responder', 'scheduled_announcements', 'birthdays', 'role_menus', 'xp', 'notifications', 'ai', 'custom_commands'];
 
 function isEnabled(guildId, feature) {
   const row = stmtFlagGet.get(guildId, feature);

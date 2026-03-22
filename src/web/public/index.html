@@ -5,31 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BBots — Admin Dashboard</title>
   <link rel="stylesheet" href="/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <nav class="sidebar">
     <div class="sidebar-logo">
-      <span class="logo-icon">🤖</span>
+      <span class="logo-icon"><i data-lucide="bot"></i></span>
       <span class="logo-text">BBots</span>
     </div>
     <ul class="sidebar-nav">
-      <li><a href="#" class="nav-link active" data-section="stats">📊 Stats</a></li>
-      <li><a href="#" class="nav-link" data-section="announce">📣 Announce</a></li>
-      <li><a href="#" class="nav-link" data-section="welcome">👋 Welcome</a></li>
-      <li><a href="#" class="nav-link" data-section="roles">🎭 Roles</a></li>
-      <li><a href="#" class="nav-link" data-section="reaction-roles">🎯 Reaction Roles</a></li>
-      <li><a href="#" class="nav-link" data-section="auto-roles">🤖 Auto Roles</a></li>
-      <li><a href="#" class="nav-link" data-section="embed">📝 Embed Builder</a></li>
-      <li><a href="#" class="nav-link" data-section="auto-responders">💬 Auto-Responders</a></li>
-      <li><a href="#" class="nav-link" data-section="scheduled">🕐 Scheduled</a></li>
-      <li><a href="#" class="nav-link" data-section="birthdays">🎂 Birthdays</a></li>
-      <li><a href="#" class="nav-link" data-section="xp">⭐ XP</a></li>
-      <li><a href="#" class="nav-link" data-section="notif">🔔 Notifications</a></li>
-      <li><a href="#" class="nav-link" data-section="ai">🤖 AI Chat</a></li>
-      <li><a href="#" class="nav-link" data-section="features">🎛️ Features</a></li>
-      <li><a href="#" class="nav-link" data-section="logs">📋 Logs</a></li>
-      <li><a href="#" class="nav-link" data-section="settings">⚙️ Settings</a></li>
+      <li><a href="#" class="nav-link active" data-section="stats"><i data-lucide="bar-chart-2"></i> Stats</a></li>
+      <li><a href="#" class="nav-link" data-section="announce"><i data-lucide="megaphone"></i> Announce</a></li>
+      <li><a href="#" class="nav-link" data-section="welcome"><i data-lucide="user-plus"></i> Welcome</a></li>
+      <li><a href="#" class="nav-link" data-section="roles"><i data-lucide="shield"></i> Roles</a></li>
+      <li><a href="#" class="nav-link" data-section="reaction-roles"><i data-lucide="smile"></i> Reaction Roles</a></li>
+      <li><a href="#" class="nav-link" data-section="auto-roles"><i data-lucide="bot"></i> Auto Roles</a></li>
+      <li><a href="#" class="nav-link" data-section="embed"><i data-lucide="layout-template"></i> Embed Builder</a></li>
+      <li><a href="#" class="nav-link" data-section="auto-responders"><i data-lucide="message-square"></i> Auto-Responders</a></li>
+      <li><a href="#" class="nav-link" data-section="scheduled"><i data-lucide="clock"></i> Scheduled</a></li>
+      <li><a href="#" class="nav-link" data-section="birthdays"><i data-lucide="cake"></i> Birthdays</a></li>
+      <li><a href="#" class="nav-link" data-section="xp"><i data-lucide="star"></i> XP</a></li>
+      <li><a href="#" class="nav-link" data-section="notif"><i data-lucide="bell"></i> Notifications</a></li>
+      <li><a href="#" class="nav-link" data-section="ai"><i data-lucide="cpu"></i> AI Chat</a></li>
+      <li><a href="#" class="nav-link" data-section="custom-commands"><i data-lucide="terminal"></i> Custom Commands</a></li>
+      <li><a href="#" class="nav-link" data-section="features"><i data-lucide="sliders-horizontal"></i> Features</a></li>
+      <li><a href="#" class="nav-link" data-section="logs"><i data-lucide="scroll-text"></i> Logs</a></li>
+      <li><a href="#" class="nav-link" data-section="settings"><i data-lucide="settings"></i> Settings</a></li>
     </ul>
     <div class="sidebar-user" id="sidebar-user">
       <div class="sidebar-user-avatar" id="sidebar-avatar"></div>
@@ -74,7 +76,7 @@
         </div>
       </div>
       <div style="margin-top:1.25rem">
-        <button class="btn btn-primary" id="deploy-btn" onclick="deployCommands()">🚀 Deploy Slash Commands</button>
+        <button class="btn btn-primary" id="deploy-btn" onclick="deployCommands()"><i data-lucide="rocket"></i> Deploy Slash Commands</button>
         <span id="deploy-feedback" class="feedback" style="margin-left:0.75rem"></span>
       </div>
     </section>
@@ -433,6 +435,33 @@
       </div>
     </section>
 
+    <!-- ── Custom Commands ────────────────────────────────────── -->
+    <section id="section-custom-commands" class="section">
+      <h1 class="section-title">Custom Commands</h1>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="margin:0 0 0.75rem">Prefix</h3>
+        <p class="section-desc">Set the prefix for custom commands (default: <code>!</code>).</p>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+          <input type="text" id="prefix-input" maxlength="5" placeholder="!" style="width:80px" class="input-field">
+          <button class="btn btn-primary" onclick="savePrefix()">Save</button>
+          <span id="prefix-feedback" class="feedback"></span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="margin:0 0 0.75rem">Add Command</h3>
+        <div style="display:grid;grid-template-columns:150px 1fr auto;gap:0.5rem;align-items:start">
+          <input type="text" id="cmd-name" placeholder="Command name (e.g. rules)" class="input-field">
+          <textarea id="cmd-response" rows="3" placeholder="Response text... Use @RoleName or @Username to mention." class="input-field" style="resize:vertical"></textarea>
+          <button class="btn btn-primary" onclick="addCustomCommand()" style="align-self:flex-end">Add</button>
+        </div>
+        <span id="cmd-feedback" class="feedback" style="display:block;margin-top:0.5rem"></span>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 0.75rem">Commands</h3>
+        <div id="custom-commands-list"><span class="muted-text">Loading...</span></div>
+      </div>
+    </section>
+
     <!-- ── Features ───────────────────────────────────────────── -->
     <section id="section-features" class="section">
       <h1 class="section-title">Features</h1>
@@ -538,6 +567,7 @@
       if (name === 'xp')              loadXpLeaderboard();
       if (name === 'notif')           loadNotifications();
       if (name === 'ai')              loadAiSection();
+      if (name === 'custom-commands') loadCustomCommands();
       if (name === 'features')        loadFeatures();
     }
 
@@ -1172,6 +1202,64 @@
       finally { btn.disabled = false; }
     });
 
+    // ── Custom Commands ─────────────────────────────────────────────────────
+    async function loadCustomCommands() {
+      try {
+        const [{ prefix }, cmds] = await Promise.all([
+          apiFetch('/api/prefix'),
+          apiFetch('/api/custom-commands'),
+        ]);
+        document.getElementById('prefix-input').value = prefix;
+        const el = document.getElementById('custom-commands-list');
+        if (!cmds.length) {
+          el.innerHTML = '<p class="section-desc">No custom commands yet.</p>';
+          return;
+        }
+        el.innerHTML = `<table class="log-table"><thead><tr><th>Command</th><th>Response</th><th></th></tr></thead><tbody>
+          ${cmds.map(c => `<tr>
+            <td><code id="prefix-input-display">${document.getElementById('prefix-input').value}${c.name}</code></td>
+            <td style="max-width:400px;word-break:break-word">${escHtml(c.response)}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="deleteCustomCommand('${c.id}')">Delete</button></td>
+          </tr>`).join('')}
+        </tbody></table>`;
+      } catch { document.getElementById('custom-commands-list').innerHTML = '<p class="section-desc">Failed to load.</p>'; }
+    }
+
+    async function savePrefix() {
+      const prefix = document.getElementById('prefix-input').value.trim();
+      const fb = document.getElementById('prefix-feedback');
+      if (!prefix) { fb.textContent = 'Prefix cannot be empty.'; fb.style.color = '#f04747'; return; }
+      try {
+        await apiFetch('/api/prefix', { method: 'POST', body: JSON.stringify({ prefix }) });
+        fb.textContent = 'Saved!'; fb.style.color = '#43b581';
+        setTimeout(() => fb.textContent = '', 2000);
+      } catch (e) { fb.textContent = e.message; fb.style.color = '#f04747'; }
+    }
+
+    async function addCustomCommand() {
+      const name = document.getElementById('cmd-name').value.trim();
+      const response = document.getElementById('cmd-response').value.trim();
+      const fb = document.getElementById('cmd-feedback');
+      if (!name || !response) { fb.textContent = 'Name and response are required.'; fb.style.color = '#f04747'; return; }
+      try {
+        await apiFetch('/api/custom-commands', { method: 'POST', body: JSON.stringify({ name, response }) });
+        document.getElementById('cmd-name').value = '';
+        document.getElementById('cmd-response').value = '';
+        fb.textContent = 'Command added!'; fb.style.color = '#43b581';
+        setTimeout(() => fb.textContent = '', 2000);
+        loadCustomCommands();
+      } catch (e) { fb.textContent = e.message; fb.style.color = '#f04747'; }
+    }
+
+    async function deleteCustomCommand(id) {
+      await apiFetch(`/api/custom-commands/${id}`, { method: 'DELETE' });
+      loadCustomCommands();
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
     // ── Features ───────────────────────────────────────────────────────────
     const FEATURE_LABELS = {
       auto_responder:           '💬 Auto-Responder',
@@ -1179,9 +1267,9 @@
       birthdays:                '🎂 Birthday Announcements',
       role_menus:               '🎛️ Self-Assignable Role Menus',
       xp:                       '⭐ XP & Leveling',
-      music:                    '🎵 Music Playback',
       notifications:            '🔔 Notifications',
       ai:                       '🤖 AI Chat',
+      custom_commands:          '🔤 Custom Commands',
     };
 
     async function loadFeatures() {
@@ -1294,6 +1382,7 @@
     loadMe();
     loadStats();
     loadAiSettings();
+    lucide.createIcons();
   </script>
 </body>
 </html>
